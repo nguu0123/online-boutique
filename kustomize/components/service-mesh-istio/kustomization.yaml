@@ -18,6 +18,9 @@ resources:
   - allow-egress-googleapis.yaml
   - frontend-gateway.yaml
   - frontend.yaml
+  - grafana.yaml
+  - prometheus.yaml
+  - kiali.yaml
 patches:
   # frontend - delete frontend-external service (same as non-public-frontend component)
   - patch: |-
