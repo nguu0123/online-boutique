@@ -1,6 +1,7 @@
 print("Enabling Ingress and MetalLB addons...")
 local("minikube addons enable ingress")
 local("minikube addons enable metallb")
+local("minikube addons enable metrics-server")
 
 print("Configuring MetalLB...")
 minikube_ip = str(local("minikube ip")).strip()
@@ -35,11 +36,15 @@ local('echo "{content}" | kubectl apply -f -'.format(content=metallb_config))
 
 # ISTIO
 # install istio default profile and enable
+
+local("kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
+  { kubectl kustomize \"github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.2.1\" | kubectl apply -f -; }")
 local("istioctl install --set profile=minimal -y")
 local("kubectl label namespace default istio-injection=enabled")
 
 # Application
-local("kubectl apply -k ./kustomize/")
+yaml = kustomize('./kustomize')
+k8s_yaml(yaml)
 
-k8s_resource('jaeger', port_forwards=16686)
+#k8s_resource('jaeger', port_forwards=16686)
 k8s_resource('prometheus', port_forwards=9090)
