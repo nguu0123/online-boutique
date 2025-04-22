@@ -26,6 +26,6 @@ resources:
     # - components/single-shared-session
     # - components/spanner
 components:
-  - components/service-mesh-istio
+  # - components/service-mesh-istio
   - components/hpa
   - components/without-loadgenerator
